@@ -23,11 +23,6 @@ pub enum Error {
         source: serde_json::Error,
         backtrace: Backtrace,
     },
-    #[snafu(display("JSON Error in {}: {}\nFound at {}", source.path(), source.inner(), backtrace))]
-    Json {
-        source: serde_path_to_error::Error<serde_json::Error>,
-        backtrace: Backtrace,
-    },
     Other {
         source: Box<dyn std::error::Error + Send + Sync>,
         backtrace: Backtrace,
@@ -48,7 +43,11 @@ impl fmt::Display for GitHubError {
         write!(f, "Error: {}", self.message)?;
 
         if self.documentation_url.is_some() {
-            write!(f, "\nDocumentation URL: {}", self.documentation_url.as_ref().unwrap())?;
+            write!(
+                f,
+                "\nDocumentation URL: {}",
+                self.documentation_url.as_ref().unwrap()
+            )?;
         }
 
         Ok(())
